@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>STUDY & HABIT TRACKER PRO</title>
+
+  <style>
+    :root {
+      --bg-white: #f8fafc;
+      --card-white: #ffffff;
+      --primary-red: #d32f2f;
+      --primary-red-hover: #b71c1c;
+      --light-red-bg: #fff5f5;
+      --light-red-border: #fed7d7;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --status-green: #10b981;
+      --border-color: #e2e8f0;
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-white);
+      color: var(--text-dark);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 20px;
+    }
+
+    /* CARD SYSTEM */
+    .card {
+      background: var(--card-white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      margin-bottom: 20px;
+    }
+
+    /* AUTH SCREEN */
+    .auth-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 85vh;
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 440px;
+      border-top: 4px solid var(--primary-red);
+    }
+
+    .auth-tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .auth-tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .auth-tab.active {
+      color: var(--primary-red);
+      border-bottom: 2px solid var(--primary-red);
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 6px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      font-size: 14px;
+      outline: none;
+    }
+
+    .form-group input:focus {
+      border-color: var(--primary-red);
+    }
+
+    .btn-red {
+      background: var(--primary-red);
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: var(--radius);
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.2s;
+    }
+
+    .btn-red:hover {
+      background: var(--primary-red-hover);
+    }
+
+    /* DASHBOARD NAVBAR */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+      border-bottom: 1px solid var(--border-color);
+      padding: 14px 24px;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--primary-red);
+    }
+
+    .btn-logout {
+      background: var(--light-red-bg);
+      border: 1px solid var(--light-red-border);
+      color: var(--primary-red);
+      padding: 6px 14px;
+      border-radius: var(--radius);
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .btn-logout:hover {
+      background: var(--primary-red);
+      color: #fff;
+    }
+
+    /* VITALS RIBBON */
+    .vitals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .vital-box {
+      background: #fff;
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--primary-red);
+      padding: 16px;
+      border-radius: var(--radius);
+    }
+
+    .vital-lbl {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .vital-val {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--primary-red);
+      margin-top: 4px;
+    }
+
+    /* TASK LIST */
+    .task-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      margin-bottom: 10px;
+      background: #fff;
+      transition: all 0.2s;
+    }
+
+    .task-row:hover {
+      border-color: var(--primary-red);
+      background: var(--light-red-bg);
+    }
+
+    .task-row.done {
+      border-color: var(--status-green);
+      background: #f0fdf4;
+    }
+
+    .task-row.done .task-title {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .task-time {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .btn-resolve {
+      background: #fff;
+      border: 1px solid var(--primary-red);
+      color: var(--primary-red);
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: var(--radius);
+      cursor: pointer;
+    }
+
+    .btn-resolve:hover {
+      background: var(--primary-red);
+      color: #fff;
+    }
+
+    .task-row.done .btn-resolve {
+      border-color: var(--status-green);
+      background: var(--status-green);
+      color: #fff;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--primary-red);
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .cal-cell {
+      aspect-ratio: 1;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 4px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .cal-cell.active-day {
+      border-color: var(--primary-red);
+      background: var(--light-red-bg);
+    }
+
+    @media (max-width: 768px) {
+      .main-grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- AUTH SECTION (LOGIN / REGISTER) -->
+  <div id="authSection" class="auth-wrapper">
+    <div class="card auth-card">
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span style="background: var(--primary-red); color:#fff; font-weight:800; padding: 4px 10px; border-radius: 4px;">ST</span>
+        <h2 style="font-size: 20px; font-weight: 800; margin-top: 8px;">STUDY TRACKER PRO</h2>
+        <p style="font-size: 12px; color: var(--text-muted);">50-Day Routine & Exam System</p>
+      </div>
+
+      <div class="auth-tabs">
+        <div id="tabLogin" class="auth-tab active" onclick="switchAuth('login')">Sign In</div>
+        <div id="tabRegister" class="auth-tab" onclick="switchAuth('register')">Create Account</div>
+      </div>
+
+      <div id="registerNameGroup" class="form-group" style="display: none;">
+        <label>YOUR NAME</label>
+        <input type="text" id="authName" placeholder="e.g. Rahul Sharma" />
+      </div>
+
+      <div class="form-group">
+        <label>EMAIL ADDRESS</label>
+        <input type="email" id="authEmail" placeholder="user@gmail.com" />
+      </div>
+
+      <div class="form-group">
+        <label>PASSWORD</label>
+        <input type="password" id="authPassword" placeholder="••••••••" />
+      </div>
+
+      <button id="btnAuthSubmit" class="btn-red" onclick="handleAuth()">SIGN IN</button>
+    </div>
+  </div>
+
+  <!-- DASHBOARD SECTION (AUTHENTICATED) -->
+  <div id="appSection" style="display: none;">
+    <nav class="navbar">
+      <div class="nav-brand">
+        <span style="background: var(--primary-red); color:#fff; padding: 2px 8px; border-radius: 4px;">ST</span>
+        STUDY TRACKER PRO
+      </div>
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <span id="navUserName" style="font-size: 13px; font-weight: 700;">USER</span>
+        <button class="btn-logout" onclick="logout()">LOGOUT</button>
+      </div>
+    </nav>
+
+    <div class="container">
+      <!-- VITALS -->
+      <div class="vitals-grid">
+        <div class="vital-box">
+          <div class="vital-lbl">LEVEL STATUS</div>
+          <div id="dashLevel" class="vital-val">LVL 1</div>
+        </div>
+        <div class="vital-box">
+          <div class="vital-lbl">XP EARNED</div>
+          <div id="dashXP" class="vital-val">0 XP</div>
+        </div>
+        <div class="vital-box">
+          <div class="vital-lbl">ACTIVE STREAK</div>
+          <div id="dashStreak" class="vital-val">🔥 0 DAYS</div>
+        </div>
+        <div class="vital-box">
+          <div class="vital-lbl">SYSTEM COINS</div>
+          <div id="dashCoins" class="vital-val">🪙 0</div>
+        </div>
+      </div>
+
+      <!-- MAIN CONTENT -->
+      <div class="main-grid" style="display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 20px;">
+        <!-- LEFT: TODAY'S TARGETS -->
+        <div>
+          <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <h3 style="font-size: 16px; font-weight: 800;">TODAY'S STRICT TIMETABLE</h3>
+              <span id="scoreText" style="font-size: 13px; font-weight: 700; color: var(--primary-red);">0% Completed</span>
+            </div>
+            <div class="progress-track">
+              <div id="progressBar" class="progress-fill"></div>
+            </div>
+            <div id="taskList"></div>
+          </div>
+
+          <!-- CALENDAR -->
+          <div class="card">
+            <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 8px;">ACTIVITY CALENDAR</h3>
+            <div id="calendarGrid" class="calendar-grid"></div>
+          </div>
+        </div>
+
+        <!-- RIGHT: PRIMARY GOALS & EXAM TRACKERS -->
+        <div>
+          <!-- BA TRACKER -->
+          <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h3 style="font-size: 15px; font-weight: 800;">📚 BA 50-DAY TARGET</h3>
+              <span style="font-size: 11px; background: var(--light-red-bg); color: var(--primary-red); padding: 2px 6px; border-radius: 4px; font-weight: 700;">114 Ch</span>
+            </div>
+            <div style="font-size: 26px; font-weight: 800; color: var(--primary-red); margin: 8px 0;" id="goalUnitsDisplay">0 / 114 Ch</div>
+            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Day 1–45: Syllabus | Day 46–50: Revision & PYQ</div>
+            <div style="display:flex; gap: 8px;">
+              <button class="btn-red" style="padding: 6px 12px; font-size: 12px;" onclick="updateGoal(1)">+1 Chapter Done</button>
+              <button class="btn-red" style="padding: 6px 12px; font-size: 12px; background: #94a3b8;" onclick="updateGoal(-1)">-1</button>
+            </div>
+          </div>
+
+          <!-- SSC CGL TRACKER -->
+          <div class="card">
+            <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 6px;">🎯 SSC CGL PREP (PHASE 1)</h3>
+            <div style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+              • Maths: 1 Hour/day<br>
+              • Reasoning: 30 Min/day<br>
+              <em style="color: var(--primary-red);">English & GK: Phase 2 (After BA Exam)</em>
+            </div>
+          </div>
+
+          <!-- ADD CUSTOM SLOT -->
+          <div class="card">
+            <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 12px;">+ ADD NEW TIME SLOT</h3>
+            <div class="form-group">
+              <label>TIME DURATION</label>
+              <input type="text" id="newTimeSlot" placeholder="e.g. 19:00 - 20:30" />
+            </div>
+            <div class="form-group">
+              <label>ACTIVITY / SUBJECT</label>
+              <input type="text" id="newTitle" placeholder="e.g. Mock Test / Practice" />
+            </div>
+            <button class="btn-red" onclick="addNewRoutine()">ADD TO ROUTINE</button>
+          </div>
+
+          <!-- NOTES -->
+          <div class="card">
+            <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 8px;">DAILY NOTES & REFLECTION</h3>
+            <textarea id="dailyNotes" style="width: 100%; height: 80px; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius); outline: none;" placeholder="What did you learn today? What is the plan for tomorrow?"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const DB_KEY = 'SYSTEM_USERS_DATABASE_V2';
+    let currentAuthMode = 'login';
+    let currentUserEmail = localStorage.getItem('CURRENT_SESSION_USER');
+
+    // AAPKA EXACT TIME TABLE DEFAULT KE ROOP MEIN SET HAI
+    const DEFAULT_USER_ROUTINE = [
+      { id: 1, timeSlot: '05:00 – 08:00 AM', title: '🏋️ Gym Workout', xp: 50 },
+      { id: 2, timeSlot: '08:00 – 09:00 AM', title: '🚿 Bath + Breakfast + Fresh', xp: 20 },
+      { id: 3, timeSlot: '09:00 – 12:00 PM', title: '💻 Digital Marketing (3 Hours)', xp: 100 },
+      { id: 4, timeSlot: '12:00 – 12:30 PM', title: '🍛 Lunch + Rest Break', xp: 10 },
+      { id: 5, timeSlot: '12:30 – 02:30 PM', title: '📚 BA Deep Study (Chapter 1)', xp: 100 },
+      { id: 6, timeSlot: '02:30 – 03:00 PM', title: '☕ Break & Relax', xp: 10 },
+      { id: 7, timeSlot: '03:00 – 05:00 PM', title: '📚 BA Deep Study (Chapter 2)', xp: 100 },
+      { id: 8, timeSlot: '05:00 – 05:30 PM', title: '🍎 Healthy Snack Break', xp: 10 },
+      { id: 9, timeSlot: '05:30 – 06:30 PM', title: '🎯 SSC Maths (1 Hour)', xp: 70 },
+      { id: 10, timeSlot: '06:30 – 07:00 PM', title: '🎯 SSC Reasoning (30 Min)', xp: 40 },
+      { id: 11, timeSlot: '07:00 – 08:00 PM', title: '🏃 Running & Cardio (1 Hour)', xp: 40 },
+      { id: 12, timeSlot: '08:00 – 08:45 PM', title: '🍛 Dinner + Fresh', xp: 10 },
+      { id: 13, timeSlot: '08:45 – 09:45 PM', title: '📚 BA Revision / Chapter 3', xp: 60 },
+      { id: 14, timeSlot: '09:45 – 10:00 PM', title: '📝 Next-Day Planning & Target Set', xp: 20 },
+      { id: 15, timeSlot: '10:00 – 05:00 AM', title: '😴 Full Sleep Protocol (7 Hours)', xp: 30 }
+    ];
+
+    function getDB() {
+      const raw = localStorage.getItem(DB_KEY);
+      return raw ? JSON.parse(raw) : {};
+    }
+
+    function saveDB(db) {
+      localStorage.setItem(DB_KEY, JSON.stringify(db));
+    }
+
+    function getTodayKey() {
+      return new Date().toISOString().split('T')[0];
+    }
+
+    window.onload = () => {
+      if (currentUserEmail && getDB()[currentUserEmail]) {
+        loadDashboard();
+      } else {
+        showAuth();
+      }
+    };
+
+    function switchAuth(mode) {
+      currentAuthMode = mode;
+      document.getElementById('tabLogin').className = `auth-tab ${mode === 'login' ? 'active' : ''}`;
+      document.getElementById('tabRegister').className = `auth-tab ${mode === 'register' ? 'active' : ''}`;
+      document.getElementById('registerNameGroup').style.display = mode === 'register' ? 'block' : 'none';
+      document.getElementById('btnAuthSubmit').textContent = mode === 'register' ? 'CREATE ACCOUNT' : 'SIGN IN';
+    }
+
+    function handleAuth() {
+      const email = document.getElementById('authEmail').value.trim().toLowerCase();
+      const password = document.getElementById('authPassword').value.trim();
+      const name = document.getElementById('authName').value.trim();
+      const db = getDB();
+
+      if (!email || !password) return alert('Email aur Password daalna zaroori hai.');
+
+      if (currentAuthMode === 'register') {
+        if (!name) return alert('Kripya apna naam bharein.');
+        if (db[email]) return alert('Ye email pehle se registered hai! Sign In karein.');
+
+        db[email] = {
+          name: name,
+          password: password,
+          level: 1,
+          xp: 0,
+          streak: 0,
+          coins: 0,
+          goalTitle: 'BA 50-Day Mission',
+          goalTarget: 114,
+          goalCompleted: 0,
+          routines: [...DEFAULT_USER_ROUTINE],
+          logs: {}
+        };
+        saveDB(db);
+        currentUserEmail = email;
+        localStorage.setItem('CURRENT_SESSION_USER', email);
+        loadDashboard();
+      } else {
+        if (!db[email] || db[email].password !== password) {
+          return alert('Galat Email ya Password.');
+        }
+        currentUserEmail = email;
+        localStorage.setItem('CURRENT_SESSION_USER', email);
+        loadDashboard();
+      }
+    }
+
+    function loadDashboard() {
+      const db = getDB();
+      const user = db[currentUserEmail];
+      if (!user) return logout();
+
+      document.getElementById('authSection').style.display = 'none';
+      document.getElementById('appSection').style.display = 'block';
+
+      document.getElementById('navUserName').textContent = user.name.toUpperCase();
+      document.getElementById('dashLevel').textContent = `LVL ${user.level}`;
+      document.getElementById('dashXP').textContent = `${user.xp} XP`;
+      document.getElementById('dashStreak').textContent = `🔥 ${user.streak} DAYS`;
+      document.getElementById('dashCoins').textContent = `🪙 ${user.coins}`;
+
+      document.getElementById('goalUnitsDisplay').textContent = `${user.goalCompleted} / ${user.goalTarget} Ch`;
+
+      const today = getTodayKey();
+      if (!user.logs[today]) {
+        user.logs[today] = { completedIds: [], notes: '' };
+        saveDB(db);
+      }
+
+      const list = document.getElementById('taskList');
+      list.innerHTML = '';
+      let done = 0;
+      const completedList = user.logs[today].completedIds || [];
+
+      user.routines.forEach(r => {
+        const isDone = completedList.includes(r.id);
+        if (isDone) done++;
+
+        const row = document.createElement('div');
+        row.className = `task-row ${isDone ? 'done' : ''}`;
+        row.innerHTML = `
+          <div>
+            <div class="task-title" style="font-weight:700;">${r.title}</div>
+            <div class="task-time">${r.timeSlot} • +${r.xp} XP</div>
+          </div>
+          <button class="btn-resolve" onclick="toggleTask(${r.id}, ${!isDone}, ${r.xp})">
+            ${isDone ? '✓ DONE' : 'RESOLVE'}
+          </button>
+        `;
+        list.appendChild(row);
+      });
+
+      const pct = user.routines.length ? Math.round((done / user.routines.length) * 100) : 0;
+      document.getElementById('scoreText').textContent = `${pct}% Completed`;
+      document.getElementById('progressBar').style.width = `${pct}%`;
+
+      document.getElementById('dailyNotes').value = user.logs[today].notes || '';
+      renderCalendar();
+    }
+
+    function toggleTask(id, isDone, xpDelta) {
+      const db = getDB();
+      const user = db[currentUserEmail];
+      const today = getTodayKey();
+
+      if (!user.logs[today]) user.logs[today] = { completedIds: [], notes: '' };
+
+      if (isDone) {
+        if (!user.logs[today].completedIds.includes(id)) {
+          user.logs[today].completedIds.push(id);
+          user.xp += xpDelta;
+          user.coins += Math.round(xpDelta / 5);
+        }
+      } else {
+        user.logs[today].completedIds = user.logs[today].completedIds.filter(x => x !== id);
+        user.xp = Math.max(0, user.xp - xpDelta);
+        user.coins = Math.max(0, user.coins - Math.round(xpDelta / 5));
+      }
+
+      if (user.xp >= user.level * 500) {
+        user.level++;
+        user.coins += 100;
+        alert(`★ LEVEL UP! You reached Level ${user.level} (+100 Coins)`);
+      }
+
+      if (user.logs[today].completedIds.length === user.routines.length) {
+        user.streak = Math.max(1, user.streak + 1);
+      }
+
+      saveDB(db);
+      loadDashboard();
+    }
+
+    function addNewRoutine() {
+      const timeSlot = document.getElementById('newTimeSlot').value.trim();
+      const title = document.getElementById('newTitle').value.trim();
+      if (!timeSlot || !title) return alert('Time aur title bharein.');
+
+      const db = getDB();
+      const user = db[currentUserEmail];
+      const newId = Date.now();
+
+      user.routines.push({ id: newId, timeSlot: timeSlot, title: title, xp: 50 });
+      saveDB(db);
+
+      document.getElementById('newTimeSlot').value = '';
+      document.getElementById('newTitle').value = '';
+      loadDashboard();
+    }
+
+    function updateGoal(delta) {
+      const db = getDB();
+      const user = db[currentUserEmail];
+      user.goalCompleted = Math.max(0, Math.min(user.goalTarget, user.goalCompleted + delta));
+      saveDB(db);
+      loadDashboard();
+    }
+
+    document.getElementById('dailyNotes').addEventListener('input', (e) => {
+      const db = getDB();
+      const user = db[currentUserEmail];
+      const today = getTodayKey();
+      if (user && user.logs[today]) {
+        user.logs[today].notes = e.target.value;
+        saveDB(db);
+      }
+    });
+
+    function renderCalendar() {
+      const grid = document.getElementById('calendarGrid');
+      grid.innerHTML = '';
+      const now = new Date();
+      const totalDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+      const db = getDB();
+      const user = db[currentUserEmail];
+
+      for (let i = 1; i <= totalDays; i++) {
+        const dStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+        const cell = document.createElement('div');
+        cell.className = `cal-cell ${dStr === getTodayKey() ? 'active-day' : ''}`;
+        
+        let status = '-';
+        if (user.logs && user.logs[dStr]) {
+          const doneLen = user.logs[dStr].completedIds.length;
+          status = doneLen === user.routines.length ? '100%' : `${doneLen}✓`;
+        }
+
+        cell.innerHTML = `<span>${i}</span><span style="font-size:9px; color:var(--primary-red); font-weight:bold;">${status}</span>`;
+        grid.appendChild(cell);
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('CURRENT_SESSION_USER');
+      currentUserEmail = null;
+      showAuth();
+    }
+
+    function showAuth() {
+      document.getElementById('appSection').style.display = 'none';
+      document.getElementById('authSection').style.display = 'flex';
+    }
+  </script>
+</body>
+</html>
